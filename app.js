@@ -1,13 +1,24 @@
+const PLAYMATS = [
+  "playmat1.jpg",
+  "playmat2.jpg",
+  "playmat3.jpg",
+  "playmat4.jpg"
+];
+
+const DEFAULT_CASTLE = 50;
+
 const state = {
   top: {
     name: "Jugador Arriba",
-    initialCastle: 50,
-    castle: 50
+    initialCastle: DEFAULT_CASTLE,
+    castle: DEFAULT_CASTLE,
+    playmat: PLAYMATS[0]
   },
   bottom: {
     name: "Jugador Abajo",
-    initialCastle: 50,
-    castle: 50
+    initialCastle: DEFAULT_CASTLE,
+    castle: DEFAULT_CASTLE,
+    playmat: PLAYMATS[1]
   }
 };
 
@@ -27,11 +38,59 @@ const elements = {
   applyTopDamage: document.getElementById("applyTopDamage"),
   applyBottomDamage: document.getElementById("applyBottomDamage"),
 
+  playerTopMat: document.getElementById("playerTopMat"),
+  playerBottomMat: document.getElementById("playerBottomMat"),
+
+  playerTopCard: document.getElementById("playerTopCard"),
+  playerBottomCard: document.getElementById("playerBottomCard"),
+
   resetMatch: document.getElementById("resetMatch")
 };
 
 function clampCastle(value) {
   return Math.max(0, value);
+}
+
+function sanitizeInitialValue(value) {
+  const parsed = Number(value);
+
+  if (Number.isNaN(parsed) || parsed < 0) {
+    return DEFAULT_CASTLE;
+  }
+
+  return parsed;
+}
+
+function sanitizeDamageValue(value) {
+  const parsed = Number(value);
+
+  if (Number.isNaN(parsed) || parsed < 0) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function sanitizePlaymat(value) {
+  if (PLAYMATS.includes(value)) {
+    return value;
+  }
+
+  return PLAYMATS[0];
+}
+
+function getRivalKey(attackerKey) {
+  return attackerKey === "top" ? "bottom" : "top";
+}
+
+function setPlaymat(playerKey, playmatFile) {
+  const validPlaymat = sanitizePlaymat(playmatFile);
+  state[playerKey].playmat = validPlaymat;
+}
+
+function applyPlaymats() {
+  elements.playerTopCard.style.backgroundImage = `url("${state.top.playmat}")`;
+  elements.playerBottomCard.style.backgroundImage = `url("${state.bottom.playmat}")`;
 }
 
 function render() {
@@ -43,16 +102,24 @@ function render() {
 
   elements.playerTopCastle.textContent = state.top.castle;
   elements.playerBottomCastle.textContent = state.bottom.castle;
+
+  elements.playerTopMat.value = state.top.playmat;
+  elements.playerBottomMat.value = state.bottom.playmat;
+
+  applyPlaymats();
 }
 
-function applyDamage(playerKey, damage) {
-  const parsedDamage = Number(damage);
+function applyDamageFromPlayer(attackerKey, damageValue) {
+  const damage = sanitizeDamageValue(damageValue);
 
-  if (Number.isNaN(parsedDamage) || parsedDamage < 0) {
+  if (damage === null) {
     return;
   }
 
-  state[playerKey].castle = clampCastle(state[playerKey].castle - parsedDamage);
+  const rivalKey = getRivalKey(attackerKey);
+
+  state[rivalKey].castle = clampCastle(state[rivalKey].castle - damage);
+
   saveState();
   render();
 }
@@ -68,14 +135,36 @@ function resetMatch() {
   render();
 }
 
-function sanitizeInitialValue(value) {
-  const parsed = Number(value);
+function saveState() {
+  localStorage.setItem("mitos_duelo_state", JSON.stringify(state));
+}
 
-  if (Number.isNaN(parsed) || parsed < 0) {
-    return 50;
+function loadState() {
+  const rawState = localStorage.getItem("mitos_duelo_state");
+
+  if (!rawState) {
+    return;
   }
 
-  return parsed;
+  try {
+    const parsedState = JSON.parse(rawState);
+
+    if (parsedState.top && parsedState.bottom) {
+      state.top = {
+        ...state.top,
+        ...parsedState.top,
+        playmat: sanitizePlaymat(parsedState.top.playmat || state.top.playmat)
+      };
+
+      state.bottom = {
+        ...state.bottom,
+        ...parsedState.bottom,
+        playmat: sanitizePlaymat(parsedState.bottom.playmat || state.bottom.playmat)
+      };
+    }
+  } catch (error) {
+    console.error("No se pudo cargar el estado guardado:", error);
+  }
 }
 
 function bindEvents() {
@@ -101,57 +190,39 @@ function bindEvents() {
     render();
   });
 
+  elements.playerTopMat.addEventListener("change", (event) => {
+    setPlaymat("top", event.target.value);
+    saveState();
+    render();
+  });
+
+  elements.playerBottomMat.addEventListener("change", (event) => {
+    setPlaymat("bottom", event.target.value);
+    saveState();
+    render();
+  });
+
   elements.applyTopDamage.addEventListener("click", () => {
-    applyDamage("top", elements.damageTopInput.value);
+    applyDamageFromPlayer("top", elements.damageTopInput.value);
     elements.damageTopInput.value = "";
   });
 
   elements.applyBottomDamage.addEventListener("click", () => {
-    applyDamage("bottom", elements.damageBottomInput.value);
+    applyDamageFromPlayer("bottom", elements.damageBottomInput.value);
     elements.damageBottomInput.value = "";
   });
 
   document.querySelectorAll(".quick-buttons button").forEach((button) => {
     button.addEventListener("click", () => {
-      const target = button.dataset.target;
+      const attacker = button.dataset.attacker;
       const damage = button.dataset.damage;
-      applyDamage(target, damage);
+      applyDamageFromPlayer(attacker, damage);
     });
   });
 
   elements.resetMatch.addEventListener("click", () => {
     resetMatch();
   });
-}
-
-function saveState() {
-  localStorage.setItem("mitos_duelo_state", JSON.stringify(state));
-}
-
-function loadState() {
-  const rawState = localStorage.getItem("mitos_duelo_state");
-
-  if (!rawState) {
-    return;
-  }
-
-  try {
-    const parsedState = JSON.parse(rawState);
-
-    if (parsedState.top && parsedState.bottom) {
-      state.top = {
-        ...state.top,
-        ...parsedState.top
-      };
-
-      state.bottom = {
-        ...state.bottom,
-        ...parsedState.bottom
-      };
-    }
-  } catch (error) {
-    console.error("No se pudo cargar el estado guardado:", error);
-  }
 }
 
 function init() {

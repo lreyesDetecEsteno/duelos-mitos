@@ -10,8 +10,8 @@
   <main class="app">
 
     <!-- Jugador superior -->
-    <section class="player-area top" id="playerTopArea">
-      <div class="player-card">
+    <section class="player-area top">
+      <div class="player-card" id="playerTopCard">
         <div class="player-header">
           <input
             type="text"
@@ -20,6 +20,16 @@
             value="Jugador Arriba"
             maxlength="30"
           />
+        </div>
+
+        <div class="player-options">
+          <label for="playerTopMat" class="mat-label">Playmat</label>
+          <select id="playerTopMat" class="mat-select">
+            <option value="playmat1.jpg">Playmat 1</option>
+            <option value="playmat2.jpg">Playmat 2</option>
+            <option value="playmat3.jpg">Playmat 3</option>
+            <option value="playmat4.jpg">Playmat 4</option>
+          </select>
         </div>
 
         <div class="castle-box">
@@ -38,13 +48,13 @@
         </div>
 
         <div class="damage-panel">
-          <p class="label">Recibir daño</p>
+          <p class="label">Atacar rival</p>
 
           <div class="quick-buttons">
-            <button data-target="top" data-damage="10">-10</button>
-            <button data-target="top" data-damage="20">-20</button>
-            <button data-target="top" data-damage="30">-30</button>
-            <button data-target="top" data-damage="50">-50</button>
+            <button data-attacker="top" data-damage="10">-10</button>
+            <button data-attacker="top" data-damage="20">-20</button>
+            <button data-attacker="top" data-damage="30">-30</button>
+            <button data-attacker="top" data-damage="50">-50</button>
           </div>
 
           <div class="manual-damage">
@@ -71,8 +81,8 @@
     </section>
 
     <!-- Jugador inferior -->
-    <section class="player-area bottom" id="playerBottomArea">
-      <div class="player-card">
+    <section class="player-area bottom">
+      <div class="player-card" id="playerBottomCard">
         <div class="player-header">
           <input
             type="text"
@@ -81,6 +91,16 @@
             value="Jugador Abajo"
             maxlength="30"
           />
+        </div>
+
+        <div class="player-options">
+          <label for="playerBottomMat" class="mat-label">Playmat</label>
+          <select id="playerBottomMat" class="mat-select">
+            <option value="playmat1.jpg">Playmat 1</option>
+            <option value="playmat2.jpg">Playmat 2</option>
+            <option value="playmat3.jpg">Playmat 3</option>
+            <option value="playmat4.jpg">Playmat 4</option>
+          </select>
         </div>
 
         <div class="castle-box">
@@ -99,13 +119,13 @@
         </div>
 
         <div class="damage-panel">
-          <p class="label">Recibir daño</p>
+          <p class="label">Atacar rival</p>
 
           <div class="quick-buttons">
-            <button data-target="bottom" data-damage="10">-10</button>
-            <button data-target="bottom" data-damage="20">-20</button>
-            <button data-target="bottom" data-damage="30">-30</button>
-            <button data-target="bottom" data-damage="50">-50</button>
+            <button data-attacker="bottom" data-damage="10">-10</button>
+            <button data-attacker="bottom" data-damage="20">-20</button>
+            <button data-attacker="bottom" data-damage="30">-30</button>
+            <button data-attacker="bottom" data-damage="50">-50</button>
           </div>
 
           <div class="manual-damage">

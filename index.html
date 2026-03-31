@@ -14,14 +14,25 @@
 
     <section class="player-area top">
       <div class="player-card" id="playerTopCard">
-        <div class="player-header">
-          <input
-            type="text"
-            id="playerTopName"
-            class="player-name"
-            value="Jugador Arriba"
-            maxlength="30"
-          />
+        <div class="player-header-row">
+          <div class="player-header">
+            <input
+              type="text"
+              id="playerTopName"
+              class="player-name"
+              value="Jugador Arriba"
+              maxlength="30"
+            />
+          </div>
+
+          <div class="dice-widget">
+            <p class="dice-title">D20</p>
+            <div class="dice-display small" id="topDiceDisplay">
+              <span class="dice-shape"></span>
+              <span class="dice-value" id="topDiceValue">-</span>
+            </div>
+            <button id="rollTopDice" class="dice-button small">Lanzar</button>
+          </div>
         </div>
 
         <div class="player-options">
@@ -47,19 +58,6 @@
               min="0"
             />
           </p>
-        </div>
-
-        <div class="dice-panel">
-          <p class="label">Dado de 20 caras</p>
-
-          <div class="dice-row">
-            <div class="dice-display" id="topDiceDisplay">
-              <span class="dice-shape"></span>
-              <span class="dice-value" id="topDiceValue">-</span>
-            </div>
-
-            <button id="rollTopDice" class="dice-button">Lanzar D20</button>
-          </div>
         </div>
 
         <div class="damage-panel">
@@ -96,14 +94,25 @@
 
     <section class="player-area bottom">
       <div class="player-card" id="playerBottomCard">
-        <div class="player-header">
-          <input
-            type="text"
-            id="playerBottomName"
-            class="player-name"
-            value="Jugador Abajo"
-            maxlength="30"
-          />
+        <div class="player-header-row">
+          <div class="player-header">
+            <input
+              type="text"
+              id="playerBottomName"
+              class="player-name"
+              value="Jugador Abajo"
+              maxlength="30"
+            />
+          </div>
+
+          <div class="dice-widget">
+            <p class="dice-title">D20</p>
+            <div class="dice-display small" id="bottomDiceDisplay">
+              <span class="dice-shape"></span>
+              <span class="dice-value" id="bottomDiceValue">-</span>
+            </div>
+            <button id="rollBottomDice" class="dice-button small">Lanzar</button>
+          </div>
         </div>
 
         <div class="player-options">
@@ -129,19 +138,6 @@
               min="0"
             />
           </p>
-        </div>
-
-        <div class="dice-panel">
-          <p class="label">Dado de 20 caras</p>
-
-          <div class="dice-row">
-            <div class="dice-display" id="bottomDiceDisplay">
-              <span class="dice-shape"></span>
-              <span class="dice-value" id="bottomDiceValue">-</span>
-            </div>
-
-            <button id="rollBottomDice" class="dice-button">Lanzar D20</button>
-          </div>
         </div>
 
         <div class="damage-panel">

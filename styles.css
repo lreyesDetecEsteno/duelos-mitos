@@ -16,6 +16,9 @@
   --button-hover: #2f76ea;
   --overlay: rgba(7, 15, 30, 0.58);
   --input-bg: rgba(5, 12, 28, 0.78);
+  --dice-bg: rgba(9, 18, 36, 0.86);
+  --dice-border: rgba(148, 163, 184, 0.45);
+  --dice-glow: rgba(96, 165, 250, 0.25);
 }
 
 html {
@@ -54,7 +57,7 @@ body {
   border-radius: 24px;
   padding: 18px;
   display: grid;
-  grid-template-rows: auto auto auto auto;
+  grid-template-rows: auto auto auto auto auto;
   gap: 14px;
   position: relative;
   overflow: hidden;
@@ -108,7 +111,8 @@ body {
   color: var(--text);
 }
 
-.castle-box {
+.castle-box,
+.dice-panel {
   text-align: center;
   background: linear-gradient(180deg, var(--panel), var(--panel-2));
   border: 2px solid var(--line);
@@ -148,17 +152,49 @@ body {
   color: var(--text);
 }
 
-.damage-panel {
+.dice-row {
   display: grid;
+  grid-template-columns: 140px 1fr;
   gap: 14px;
+  align-items: center;
 }
 
-.quick-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+.dice-display {
+  height: 120px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--dice-bg), rgba(19, 33, 59, 0.95));
+  border: 2px solid var(--dice-border);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 12px 30px rgba(0, 0, 0, 0.25),
+    0 0 20px var(--dice-glow);
 }
 
+.dice-shape {
+  width: 74px;
+  height: 74px;
+  background: linear-gradient(180deg, rgba(96, 165, 250, 0.28), rgba(59, 130, 246, 0.12));
+  border: 2px solid rgba(147, 197, 253, 0.45);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  position: absolute;
+  opacity: 0.9;
+}
+
+.dice-value {
+  position: relative;
+  z-index: 1;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+}
+
+.dice-button,
 .quick-buttons button,
 .manual-damage button,
 .center-actions button {
@@ -174,10 +210,34 @@ body {
   min-height: 56px;
 }
 
+.dice-button:hover,
 .quick-buttons button:hover,
 .manual-damage button:hover,
 .center-actions button:hover {
   background: var(--button-hover);
+}
+
+.dice-display.rolling {
+  animation: dicePulse 0.55s ease;
+}
+
+.dice-display.rolling .dice-shape {
+  animation: diceSpin 0.55s linear;
+}
+
+.dice-display.rolling .dice-value {
+  animation: diceBlink 0.55s ease;
+}
+
+.damage-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.quick-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .manual-damage {
@@ -220,6 +280,63 @@ body {
   font-size: clamp(1rem, 2.5vw, 2rem);
 }
 
+@keyframes diceSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.08);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.92);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes dicePulse {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+      0 12px 30px rgba(0, 0, 0, 0.25),
+      0 0 20px var(--dice-glow);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+      0 12px 30px rgba(0, 0, 0, 0.25),
+      0 0 35px rgba(96, 165, 250, 0.45);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+      0 12px 30px rgba(0, 0, 0, 0.25),
+      0 0 20px var(--dice-glow);
+  }
+}
+
+@keyframes diceBlink {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 1024px) {
   .player-card {
     max-width: 100%;
@@ -233,6 +350,14 @@ body {
 
   .castle-count {
     font-size: clamp(3rem, 10vw, 5rem);
+  }
+
+  .dice-row {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .dice-display {
+    height: 108px;
   }
 }
 
@@ -257,6 +382,16 @@ body {
     min-width: 0;
   }
 
+  .dice-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dice-display {
+    width: 100%;
+    max-width: 180px;
+    margin: 0 auto;
+  }
+
   .quick-buttons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -265,7 +400,8 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .manual-damage button {
+  .manual-damage button,
+  .dice-button {
     width: 100%;
   }
 
@@ -321,7 +457,8 @@ body {
     padding: 10px;
   }
 
-  .castle-box {
+  .castle-box,
+  .dice-panel {
     padding: 16px 12px;
   }
 
@@ -335,11 +472,25 @@ body {
     padding: 7px 8px;
   }
 
+  .dice-display {
+    height: 96px;
+  }
+
+  .dice-shape {
+    width: 60px;
+    height: 60px;
+  }
+
+  .dice-value {
+    font-size: 1.8rem;
+  }
+
   .quick-buttons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
+  .dice-button,
   .quick-buttons button,
   .manual-damage button,
   .center-actions button {

@@ -6,19 +6,22 @@ const PLAYMATS = [
 ];
 
 const DEFAULT_CASTLE = 50;
+const DEFAULT_DICE_VALUE = "-";
 
 const state = {
   top: {
     name: "Jugador Arriba",
     initialCastle: DEFAULT_CASTLE,
     castle: DEFAULT_CASTLE,
-    playmat: PLAYMATS[0]
+    playmat: PLAYMATS[0],
+    dice: DEFAULT_DICE_VALUE
   },
   bottom: {
     name: "Jugador Abajo",
     initialCastle: DEFAULT_CASTLE,
     castle: DEFAULT_CASTLE,
-    playmat: PLAYMATS[1]
+    playmat: PLAYMATS[1],
+    dice: DEFAULT_DICE_VALUE
   }
 };
 
@@ -43,6 +46,15 @@ const elements = {
 
   playerTopCard: document.getElementById("playerTopCard"),
   playerBottomCard: document.getElementById("playerBottomCard"),
+
+  topDiceValue: document.getElementById("topDiceValue"),
+  bottomDiceValue: document.getElementById("bottomDiceValue"),
+
+  topDiceDisplay: document.getElementById("topDiceDisplay"),
+  bottomDiceDisplay: document.getElementById("bottomDiceDisplay"),
+
+  rollTopDice: document.getElementById("rollTopDice"),
+  rollBottomDice: document.getElementById("rollBottomDice"),
 
   resetMatch: document.getElementById("resetMatch")
 };
@@ -79,6 +91,16 @@ function sanitizePlaymat(value) {
   return PLAYMATS[0];
 }
 
+function sanitizeDiceValue(value) {
+  const parsed = Number(value);
+
+  if (Number.isInteger(parsed) && parsed >= 1 && parsed <= 20) {
+    return parsed;
+  }
+
+  return DEFAULT_DICE_VALUE;
+}
+
 function getRivalKey(attackerKey) {
   return attackerKey === "top" ? "bottom" : "top";
 }
@@ -106,6 +128,9 @@ function render() {
   elements.playerTopMat.value = state.top.playmat;
   elements.playerBottomMat.value = state.bottom.playmat;
 
+  elements.topDiceValue.textContent = state.top.dice;
+  elements.bottomDiceValue.textContent = state.bottom.dice;
+
   applyPlaymats();
 }
 
@@ -123,12 +148,41 @@ function applyDamageFromPlayer(attackerKey, damageValue) {
   render();
 }
 
+function randomD20() {
+  return Math.floor(Math.random() * 20) + 1;
+}
+
+function getDiceDisplayElement(playerKey) {
+  return playerKey === "top" ? elements.topDiceDisplay : elements.bottomDiceDisplay;
+}
+
+function rollDice(playerKey) {
+  const diceDisplay = getDiceDisplayElement(playerKey);
+  const result = randomD20();
+
+  diceDisplay.classList.remove("rolling");
+  void diceDisplay.offsetWidth;
+  diceDisplay.classList.add("rolling");
+
+  window.setTimeout(() => {
+    state[playerKey].dice = result;
+    saveState();
+    render();
+  }, 280);
+
+  window.setTimeout(() => {
+    diceDisplay.classList.remove("rolling");
+  }, 560);
+}
+
 function resetMatch() {
   state.top.initialCastle = sanitizeInitialValue(elements.playerTopInitial.value);
   state.bottom.initialCastle = sanitizeInitialValue(elements.playerBottomInitial.value);
 
   state.top.castle = state.top.initialCastle;
   state.bottom.castle = state.bottom.initialCastle;
+  state.top.dice = DEFAULT_DICE_VALUE;
+  state.bottom.dice = DEFAULT_DICE_VALUE;
 
   saveState();
   render();
@@ -152,13 +206,15 @@ function loadState() {
       state.top = {
         ...state.top,
         ...parsedState.top,
-        playmat: sanitizePlaymat(parsedState.top.playmat || state.top.playmat)
+        playmat: sanitizePlaymat(parsedState.top.playmat || state.top.playmat),
+        dice: sanitizeDiceValue(parsedState.top.dice)
       };
 
       state.bottom = {
         ...state.bottom,
         ...parsedState.bottom,
-        playmat: sanitizePlaymat(parsedState.bottom.playmat || state.bottom.playmat)
+        playmat: sanitizePlaymat(parsedState.bottom.playmat || state.bottom.playmat),
+        dice: sanitizeDiceValue(parsedState.bottom.dice)
       };
     }
   } catch (error) {
@@ -209,6 +265,14 @@ function bindEvents() {
   elements.applyBottomDamage.addEventListener("click", () => {
     applyDamageFromPlayer("bottom", elements.damageBottomInput.value);
     elements.damageBottomInput.value = "";
+  });
+
+  elements.rollTopDice.addEventListener("click", () => {
+    rollDice("top");
+  });
+
+  elements.rollBottomDice.addEventListener("click", () => {
+    rollDice("bottom");
   });
 
   document.querySelectorAll(".quick-buttons button").forEach((button) => {

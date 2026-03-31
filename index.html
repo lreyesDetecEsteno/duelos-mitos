@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duelos Mitos y Leyendas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+
+    <!-- Jugador superior -->
+    <section class="player-area top" id="playerTopArea">
+      <div class="player-card">
+        <div class="player-header">
+          <input
+            type="text"
+            id="playerTopName"
+            class="player-name"
+            value="Jugador Arriba"
+            maxlength="30"
+          />
+        </div>
+
+        <div class="castle-box">
+          <p class="label">Castillo</p>
+          <div class="castle-count" id="playerTopCastle">50</div>
+          <p class="sub-label">
+            Inicial:
+            <input
+              type="number"
+              id="playerTopInitial"
+              class="initial-input"
+              value="50"
+              min="0"
+            />
+          </p>
+        </div>
+
+        <div class="damage-panel">
+          <p class="label">Recibir daño</p>
+
+          <div class="quick-buttons">
+            <button data-target="top" data-damage="10">-10</button>
+            <button data-target="top" data-damage="20">-20</button>
+            <button data-target="top" data-damage="30">-30</button>
+            <button data-target="top" data-damage="50">-50</button>
+          </div>
+
+          <div class="manual-damage">
+            <input
+              type="number"
+              id="damageTopInput"
+              placeholder="Daño"
+              min="0"
+            />
+            <button id="applyTopDamage">Aplicar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Separador central -->
+    <section class="center-bar">
+      <div class="center-content">
+        <h1>Duelos Mitos y Leyendas</h1>
+        <div class="center-actions">
+          <button id="resetMatch">Reiniciar duelo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jugador inferior -->
+    <section class="player-area bottom" id="playerBottomArea">
+      <div class="player-card">
+        <div class="player-header">
+          <input
+            type="text"
+            id="playerBottomName"
+            class="player-name"
+            value="Jugador Abajo"
+            maxlength="30"
+          />
+        </div>
+
+        <div class="castle-box">
+          <p class="label">Castillo</p>
+          <div class="castle-count" id="playerBottomCastle">50</div>
+          <p class="sub-label">
+            Inicial:
+            <input
+              type="number"
+              id="playerBottomInitial"
+              class="initial-input"
+              value="50"
+              min="0"
+            />
+          </p>
+        </div>
+
+        <div class="damage-panel">
+          <p class="label">Recibir daño</p>
+
+          <div class="quick-buttons">
+            <button data-target="bottom" data-damage="10">-10</button>
+            <button data-target="bottom" data-damage="20">-20</button>
+            <button data-target="bottom" data-damage="30">-30</button>
+            <button data-target="bottom" data-damage="50">-50</button>
+          </div>
+
+          <div class="manual-damage">
+            <input
+              type="number"
+              id="damageBottomInput"
+              placeholder="Daño"
+              min="0"
+            />
+            <button id="applyBottomDamage">Aplicar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

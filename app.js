@@ -117,7 +117,6 @@ function applyDamageFromPlayer(attackerKey, damageValue) {
   }
 
   const rivalKey = getRivalKey(attackerKey);
-
   state[rivalKey].castle = clampCastle(state[rivalKey].castle - damage);
 
   saveState();
